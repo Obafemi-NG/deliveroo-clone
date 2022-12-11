@@ -1,10 +1,11 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
+import { urlFor } from "../sanity";
 
-const CategoriesCard = ({ imgUrl, title, bgColor }) => {
+const CategoriesCard = ({ id, imgUrl, title }) => {
   return (
-    <TouchableOpacity className="mx-1 relative rounded-md bg-yellow-100">
-      <Image source={{ uri: imgUrl }} className="h-20 w-20" />
+    <TouchableOpacity className="mr-3  rounded-md shadow">
+      <Image source={{ uri: urlFor(imgUrl).url() }} className="h-20 w-20" />
       <Text className="py-1 font-thin text-xs text-gray-800"> {title} </Text>
     </TouchableOpacity>
   );

@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
 import {
@@ -11,15 +11,34 @@ import {
 import FoodCategories from "../components/FoodCategories";
 import FeaturedRow from "../components/FeaturedRow";
 import FeaturedCard from "../components/FeaturedCard";
+import client from "../sanity";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const [featuredMenu, setFeaturedMenu] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  useEffect(() => {
+    client
+      .fetch(
+        `
+        *[_type == "featured"]{
+          ...,
+          restaurants[]->{
+            ...,
+            dishes[]->
+          }
+        }
+      `
+      )
+      .then((data) => setFeaturedMenu(data));
+  }, []);
+
   return (
     <SafeAreaView className="bg-white">
       {/* Header */}
@@ -50,59 +69,22 @@ const HomeScreen = () => {
       </View>
 
       {/* Body */}
-
       <ScrollView className="bg-gray-100">
         {/* Food Categories */}
         <FoodCategories />
 
         {/* Featured Row */}
         {/* Featured */}
-        <FeaturedRow
-          title="Featured"
-          description="Paid placements from out partners"
-          featuredCategory="featured"
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator="false"
-          contentContainerStyle={{ paddingHorizontal: 15 }}
-        >
-          <FeaturedCard
-            imgUrl="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/gettyimages-1214757157.png"
-            title="Nando's"
-            rating="4.8"
-            category="Offers"
-            address="Clinks Street"
-          />
-        </ScrollView>
-
-        {/* Tasty Discount */}
-        <FeaturedRow
-          title="Tasty Discounts"
-          description="Everyone's been enjoying thes juicy discounts!"
-          featuredCategory="discounts"
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator="false"
-          contentContainerStyle={{ paddingHorizontal: 15 }}
-        >
-          <FeaturedCard />
-        </ScrollView>
-
-        {/* Offers near you */}
-        <FeaturedRow
-          title="Offers near you!"
-          description="Why not support your local restaurant tonight!"
-          featuredCategory="offers"
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator="false"
-          contentContainerStyle={{ paddingHorizontal: 15 }}
-        >
-          <FeaturedCard />
-        </ScrollView>
+        {featuredMenu?.map((category) => {
+          return (
+            <FeaturedRow
+              key={category._id}
+              id={category._id}
+              title={category.name}
+              description={category.short_description}
+            />
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
