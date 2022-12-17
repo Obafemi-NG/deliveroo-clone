@@ -14,6 +14,7 @@ const FeaturedRow = ({ id, title, description }) => {
         ...,
         restaurants[]->{
           ...,
+          dishes[]->
         }
       }[0]
       `,
@@ -45,6 +46,7 @@ const FeaturedRow = ({ id, title, description }) => {
               title={data.name}
               imgUrl={data.image}
               dishes={data.dishes}
+              shortDescription={data.short_description}
             />
           );
         })}
