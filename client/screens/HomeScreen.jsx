@@ -75,16 +75,18 @@ const HomeScreen = () => {
 
         {/* Featured Row */}
         {/* Featured */}
-        {featuredMenu?.map((category) => {
-          return (
-            <FeaturedRow
-              key={category._id}
-              id={category._id}
-              title={category.name}
-              description={category.short_description}
-            />
-          );
-        })}
+        <View className="pb-20">
+          {featuredMenu?.map((category) => {
+            return (
+              <FeaturedRow
+                key={category._id}
+                id={category._id}
+                title={category.name}
+                description={category.short_description}
+              />
+            );
+          })}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
